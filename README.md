@@ -1,64 +1,94 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Task
+## Description
+* Create a Symfony - or use another PHP framework - to build a web application.
+* Use Bootstrap as a design tool.
+* The web application has to perform CRUD operations for an entity **User** having the following properties:
+    * Email _(required)_
+    * Name _(required)_
+    * Roles _(required)_
+* The user using the web application is able to list the users with sort option for name end email column - 
+the first click sorts ascending, the second reverses the sort.
+* For the CRUD operations use forms.
+* Build the web application as if you are starting to develop a system of 500 entities.
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+## Tips and clarifications
+* You can use SQL database or TXT files to store the data (e.g. in JSON format).
 
-## About Laravel
+# Installation
+You can run this project locally by using Homestead. 
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Install VirtualBox and Homestead
+Check the following instructions:
+[https://laravel.com/docs/8.x/homestead#installation-and-setup](https://laravel.com/docs/8.x/homestead#installation-and-setup)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Clone and set up the repository
+Create a new directory on your machine where you're going to store the current project. For the sake of clarity
+of the current documentation let's name that directory _PATH_TO_PROJECT_.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Go inside the directory and clone the project:
 
-## Learning Laravel
+```
+cd /PATH_TO_PROJECT
+git clone https://github.com/pavel-tashev/laravel-bootstrap-crud-entity.git .
+```
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Install the required package _(make sure you have composer installed)_:
+```
+composer update
+```
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Copy .env.example and set a new value to APP_KEY parameter:
+```
+cp .env.example .env
+php artisan key:generate
+```
 
-## Laravel Sponsors
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## Configure Homestead
+Check the following instructions: 
+[https://laravel.com/docs/8.x/homestead#configuring-homestead](https://laravel.com/docs/8.x/homestead#configuring-homestead)
 
-### Premium Partners
+In addition, below you can find configurations I used to set up the project.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
+Open the directory where Homestead is located and open Homestead.yaml configuration file. Here is an example 
+configuration that you can use:
 
-## Contributing
+```
+...
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+folders:    
+    - map: /PATH_TO_PROJECT
+      to: /home/vagrant/project
 
-## Code of Conduct
+sites:    
+    - map: project.test
+      to: /home/vagrant/project/public
+      
+...
+```
+After updating the Homestead.yaml file, be sure to re-provision the machine by executing the following command:
+```
+vagrant reload --provision
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## Hosts file
+Open the _hosts_ file and add the following line at the very bottom where IP_ADDRESS should match the ip address 
+from Homestead.yaml file.
+```
+IP_ADDRESS project.test
+```
+Save and close the file.
 
-## Security Vulnerabilities
+# Run the project
+Open the Terminal, access the directory where Homestead is located and type the following command:
+```
+vagrant up
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Open your web browser and type _project.test_ to access the project.
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+# Stop Homestead
+Open the Terminal, access the directory where Homestead is located and type the following command:
+```
+vagrant halt
+```
