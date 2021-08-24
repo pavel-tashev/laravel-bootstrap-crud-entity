@@ -14,4 +14,4 @@ use App\Http\Controllers\UserController;
 |
 */
 Route::redirect('/', '/users');
-Route::resource('users', UserController::class);
+Route::resource('users', UserController::class)->middleware('ensure.entity.exists');
