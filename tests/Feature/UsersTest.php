@@ -45,6 +45,20 @@ class UsersTest extends TestCase
 	}
 
 	/**
+	 * Test the reading of a single nonexistent user.
+	 *
+	 * @return void
+	 */
+	public function test_read_single_nonexistent_user()
+	{
+		// Get a user with a wrong id
+		$response = $this->get("/users/" . (string) rand(10, 20));
+
+		// Check if we are redirected back to the list of users
+		$response->assertStatus(302);
+	}
+
+	/**
 	 * Create a new user.
 	 *
 	 * @return void
@@ -59,6 +73,20 @@ class UsersTest extends TestCase
 
 		// Check if it's stored in the database
 		$this->assertEquals(1, User::all()->count());
+	}
+
+	/**
+	 * Start editing a nonexistent user.
+	 *
+	 * @return void
+	 */
+	public function test_edit_nonexistent_user()
+	{
+		// Request edit page in order to edit a user but with a wrong id
+		$response = $this->get("/users/" . (string) rand(10, 20) . "/edit");
+
+		// Check if we are redirected back to the list of users
+		$response->assertStatus(302);
 	}
 
 	/**
@@ -82,6 +110,23 @@ class UsersTest extends TestCase
 	}
 
 	/**
+	 * Update a nonexistent user.
+	 *
+	 * @return void
+	 */
+	public function test_update_nonexistent_user()
+	{
+		// Create and store a new user in the database
+		$user = User::factory()->create();
+
+		// Request update of a user but with a wrong id
+		$response = $this->put("/users/" . (string) rand(10, 20), $user->toArray());
+
+		// Check if we are redirected back to the list of users
+		$response->assertStatus(302);
+	}
+
+	/**
 	 * Delete a user.
 	 *
 	 * @return void
@@ -96,5 +141,19 @@ class UsersTest extends TestCase
 
 		// Check if the user has been deleted
 		$this->assertDatabaseMissing('users',['id'=> $user->id]);
+	}
+
+	/**
+	 * Delete a nonexistent user.
+	 *
+	 * @return void
+	 */
+	public function test_delete_nonexistent_user()
+	{
+		// Submit a delete request to delete a nonexistent user
+		$response = $this->delete("/users/" . (string) rand(10, 20));
+
+		// Check if we are redirected back to the list of users
+		$response->assertStatus(302);
 	}
 }
