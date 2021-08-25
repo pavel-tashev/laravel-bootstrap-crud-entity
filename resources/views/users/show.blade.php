@@ -20,7 +20,7 @@
                 <div class="form-group">
                     <label for="roles">Roles</label>
                     <input type="text" class="form-control" name="roles" id="roles" disabled
-                           placeholder="Enter roles..." value="{{$user->roles}}">
+                           placeholder="Enter roles..." value="{{ $user->roles->pluck('name')->implode(', ') }}">
                 </div>
             </form>
 

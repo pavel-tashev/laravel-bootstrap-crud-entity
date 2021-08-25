@@ -16,7 +16,7 @@
                 <tr>
                     <td>{{ $user->name }}</td>
                     <td>{{ $user->email }}</td>
-                    <td>{{ $user->roles }}</td>
+                    <td>{{ $user->roles->pluck('name')->implode(', ') }}</td>
                     <td>
                         {{--<a href="users/{{$user->id}}" class="btn btn-primary">Show</a>--}}
                         <a href="users/{{$user->id}}/edit" class="btn btn-primary">Edit</a>

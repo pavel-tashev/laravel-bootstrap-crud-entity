@@ -31,12 +31,27 @@
                 </div>
                 <div class="form-group">
                     <label for="roles">Roles</label>
-                    <input type="text" class="form-control" name="roles" id="roles" placeholder="Enter roles..."
-                           value="{{$user->roles}}">
+                    <select name="roles[]" id="roles" class="form-control selectpicker" data-live-search="true"
+                            multiple>
+                        @foreach($roles as $role)
+                            <option value="{{$role->id}}" {{
+                                in_array(
+                                    $role->id,
+                                    array_map(function($role) { return $role['id']; }, $user->roles->toArray())
+                                ) ? 'selected' : ''
+                            }}>{{$role->name}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <button class="btn btn-success" type="Submit" >Save</button>
                 <a href="/users" class="btn btn-danger float-right">Cancel</a>
             </form>
         </div>
     </div>
+
+    <script>
+        window.onload = function() {
+            $('.selectpicker').selectpicker();
+        };
+    </script>
 @endsection
