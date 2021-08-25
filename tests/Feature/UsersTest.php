@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Models\User;
+use App\Models\Role;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UsersTest extends TestCase
@@ -65,8 +66,12 @@ class UsersTest extends TestCase
 	 */
 	public function test_create_new_user()
 	{
-		// Create a new user (instance of the User model)
+		// Create and store a new role in the database
+		$role = Role::factory()->create();
+
+		// Create a new user (instance of the User model) and set roles
 		$user = User::factory()->make();
+		$user->roles[] = $role->id;
 
 		// Submit a post request to store the user in the database
 		$this->post('/users', $user->toArray());
@@ -96,10 +101,12 @@ class UsersTest extends TestCase
 	 */
 	public function test_update_user()
 	{
-		// Create and store a new user in the database
-		$user = User::factory()->create();
+		// Create and store a new role in the database
+		$role = Role::factory()->create();
 
-		// Update the user's name
+		// Create and store a new user in the database, and set roles and a new name
+		$user = User::factory()->create();
+		$user->roles[] = $role->id;
 		$user->name = "New name";
 
 		// Submit a put request to update the user
