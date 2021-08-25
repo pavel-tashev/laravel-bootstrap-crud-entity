@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Role;
 
 class UserController extends Controller
 {
@@ -16,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-    	$users = User::paginate($this->itemsPerPage);
+    	$users = User::with(['roles'])->paginate($this->itemsPerPage);
 
 		return view('users.index', compact('users'));
     }
@@ -28,7 +29,9 @@ class UserController extends Controller
      */
     public function create()
 	{
-		return view('users.create');
+		$roles = Role::all();
+
+		return view('users.create', compact('roles'));
     }
 
     /**
@@ -45,6 +48,7 @@ class UserController extends Controller
 			'roles' => 'required',
 		]);
 		$user = User::create($validatedData);
+		$user->assignRoles($request->roles);
 
 		return redirect('/users/'.$user->id)->withInput();
     }
@@ -68,7 +72,9 @@ class UserController extends Controller
      */
     public function edit($user)
     {
-		return view('users.edit', compact('user'));
+		$roles = Role::all();
+
+		return view('users.edit', compact(['user', 'roles']));
     }
 
     /**
@@ -86,6 +92,7 @@ class UserController extends Controller
 			'roles' => 'required',
 		]);
 		$user->update($validatedData);
+		$user->updateRoles($request->roles);
 
 		return redirect('/users/'.$user->id);
     }

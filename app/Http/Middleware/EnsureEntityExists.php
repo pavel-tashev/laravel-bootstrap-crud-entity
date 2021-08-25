@@ -21,7 +21,7 @@ class EnsureEntityExists
 
     	// Check if a particular entity has been passed
     	if (array_key_exists('user', $entities)) {
-			$user = User::find($entities['user']);
+			$user = User::with(['roles'])->find($entities['user']);
 
 			// Check if the user exists and if not, redirect to the list of users
 			if (is_null($user)) return redirect('/users');
