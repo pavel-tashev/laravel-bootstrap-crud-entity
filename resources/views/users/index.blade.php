@@ -5,8 +5,8 @@
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th scope="col">Name</th>
-            <th scope="col">Email</th>
+            <th scope="col">@sortablelink('name', 'Name') (click to sort)</th>
+            <th scope="col">@sortablelink('email', 'Email') (click to sort)</th>
             <th scope="col">Roles</th>
             <th scope="col">Actions</th>
         </tr>

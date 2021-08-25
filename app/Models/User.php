@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class User extends Model
 {
-	use HasFactory;
+	use HasFactory, Sortable;
 
 	public $timestamps = false;
 
@@ -21,19 +22,11 @@ class User extends Model
         'email',
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [];
 
-    /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [];
+	public $sortable = [
+		'name',
+		'email'
+	];
 
 	/**
 	 * The roles that belong to the user.

@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index()
     {
-    	$users = User::with(['roles'])->paginate($this->itemsPerPage);
+    	$users = User::with(['roles'])->sortable()->paginate($this->itemsPerPage);
 
 		return view('users.index', compact('users'));
     }
