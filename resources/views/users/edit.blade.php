@@ -6,6 +6,16 @@
         <div class="card-header"><strong>Edit user</strong></div>
 
         <div class="card-body">
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div><br />
+            @endif
+
             <form method="POST" action="/users/{{$user->id}}">
                 {{csrf_field()}}
                 {{method_field('PUT')}}

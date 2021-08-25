@@ -37,9 +37,14 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-		$user = User::create($request->all());
+		$validatedData = $request->validate([
+			'name' => 'required',
+			'email' => 'required',
+			'roles' => 'required',
+		]);
+		$user = User::create($validatedData);
 
-		return redirect('/users/'.$user->id);
+		return redirect('/users/'.$user->id)->withInput();
     }
 
 	/**
@@ -73,7 +78,12 @@ class UserController extends Controller
      */
     public function update(Request $request, $user)
     {
-		$user->update($request->all());
+		$validatedData = $request->validate([
+			'name' => 'required',
+			'email' => 'required',
+			'roles' => 'required',
+		]);
+		$user->update($validatedData);
 
 		return redirect('/users/'.$user->id);
     }
