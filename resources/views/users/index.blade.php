@@ -30,4 +30,6 @@
             @endforeach
         </tbody>
     </table>
+
+    @include('ui.pagination', ['data' => $users])
 @endsection

@@ -7,6 +7,8 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+	private $itemsPerPage = 10;
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-    	$users = User::all();
+    	$users = User::paginate($this->itemsPerPage);
 
 		return view('users.index', compact('users'));
     }
