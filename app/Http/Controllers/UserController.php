@@ -15,11 +15,36 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-    	$users = User::with(['roles'])->sortable()->paginate($this->itemsPerPage);
+    	// Validate
+		$request->validate([
+			'sort' => 'in:email,name',
+			'direction' => 'in:desc,asc',
+			'page' => 'integer'
+		]);
 
-		return view('users.index', compact('users'));
+		// Set parameters
+		$page = isset($request->page) ? $request->page : 1;
+		$sort = isset($request->sort) ? $request->sort : null;
+		$direction = isset($request->direction) ? $request->direction : null;
+
+		// Prepare to get users
+		$users = User::with(['roles']);
+
+		// Sort users
+		if (!is_null($sort) && !is_null($direction)) $users = $users->orderBy($sort, $direction);
+
+		// Count users and calculate the pages
+		$pages = ceil($users->get()->count()/$this->itemsPerPage);
+
+		// Get users
+		$users = $users
+			->offset($this->itemsPerPage * ($page - 1))
+			->limit($this->itemsPerPage)
+			->get();
+
+		return view('users.index', compact(['users', 'page', 'sort', 'direction', 'pages']));
     }
 
     /**

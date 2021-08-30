@@ -5,8 +5,14 @@
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
-            <th scope="col">@sortablelink('name', 'Name') (click to sort)</th>
-            <th scope="col">@sortablelink('email', 'Email') (click to sort)</th>
+            <th scope="col">
+                Name
+                @include('ui.sort', ['direction' => $direction, 'sort' => 'name', 'sort_current' => $sort, 'path' => 'users'])
+            </th>
+            <th scope="col">
+                Email
+                @include('ui.sort', ['direction' => $direction, 'sort' => 'email', 'sort_current' => $sort, 'path' => 'users'])
+            </th>
             <th scope="col">Roles</th>
             <th scope="col">Actions</th>
         </tr>
@@ -31,5 +37,14 @@
         </tbody>
     </table>
 
-    @include('ui.pagination', ['data' => $users])
+    @include('ui.pagination', [
+        'data' => $users,
+        'page' => $page,
+        'pages' => $pages,
+        'path' => 'users',
+        'params' => [
+            'sort' => $sort,
+            'direction' => $direction
+        ]
+    ])
 @endsection
