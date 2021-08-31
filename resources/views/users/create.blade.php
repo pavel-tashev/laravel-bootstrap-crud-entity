@@ -16,24 +16,26 @@
                 </div><br />
             @endif
 
-            <form method="POST" action="/users">
+            <form method="POST" action="/users/create">
                 {{csrf_field()}}
 
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input type="text" class="form-control" name="name" id="name" placeholder="Enter a name..."
-                           value="{{old('name')}}">
+                           value="{{$name}}">
                 </div>
                 <div class="form-group">
                     <label for="email">Email</label>
                     <input type="text" class="form-control" name="email" id="email" placeholder="Enter an email..."
-                           value="{{old('email')}}">
+                           value="{{$email}}">
                 </div>
                 <div class="form-group">
                     <label for="roles">Roles</label>
                     <select name="roles[]" id="roles" class="form-control selectpicker" data-live-search="true" multiple>
                         @foreach($roles as $role)
-                            <option value="{{$role->id}}">{{$role->name}}</option>
+                            <option value="{{$role->id}}" {{
+                                in_array($role->id, $roles_selected) ? 'selected' : ''
+                            }}>{{$role->name}}</option>
                         @endforeach
                     </select>
                 </div>

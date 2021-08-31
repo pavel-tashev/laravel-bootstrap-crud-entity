@@ -16,7 +16,7 @@
                 </div><br />
             @endif
 
-            <form method="POST" action="/users/{{$user->id}}">
+            <form method="POST" action="/users/{{$user->id}}/edit">
                 {{csrf_field()}}
                 {{method_field('PUT')}}
                 <div class="form-group">
