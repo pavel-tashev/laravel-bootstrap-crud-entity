@@ -9,6 +9,8 @@ use App\Models\Role;
 class UserController extends Controller
 {
 	private $itemsPerPage = 10;
+	private $sort_allowed = ['email', 'name'];
+	private $direction_allowed = ['desc', 'asc'];
 
     /**
      * Display a listing of the resource.
@@ -18,40 +20,33 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-    	// Validate the input data
-		$errors = new \Illuminate\Support\MessageBag();
-		if ($request->has('sort') && !in_array($request->sort, ['email', 'name'])) {
-			$request->request->remove('sort');
-		}
-		if ($request->has('direction') && !in_array($request->direction, ['desc', 'asc'])) {
-			$request->request->remove('direction');
-		}
-		if ($request->has('page') && !is_int(1*$request->page)) {
-			$request->request->remove('page');
-		}
+    	// Validate and get the parameters responsible for the sorting and the pagination
+		list($page, $sort, $direction) =
+			validateSortAndPagination($request, $this->sort_allowed, $this->direction_allowed);
 
-		// Set parameters
-		$page = isset($request->page) ? $request->page : 1;
-		$sort = isset($request->sort) ? $request->sort : null;
-		$direction = isset($request->direction) ? $request->direction : null;
-
-		// Prepare to get users
+		// Prepare to get a list of users
 		$users = new User();
-		$users = $users->with(['roles']);
-
-		// Sort users
-		if (!is_null($sort) && !is_null($direction)) $users = $users->orderBy($sort, $direction);
 
 		// Count users and calculate the pages
 		$pages = ceil($users->get()->count()/$this->itemsPerPage);
+
+		// Sort users
+		if (!is_null($sort) && !is_null($direction)) $users = $users->orderBy($sort, $direction);
 
 		// Get users
 		$users = $users
 			->offset($this->itemsPerPage * ($page - 1))
 			->limit($this->itemsPerPage)
+			->with(['roles'])
 			->get();
 
-		return view('users.index', compact(['users', 'page', 'sort', 'direction', 'pages']));
+		return view('users.index', [
+			'users'     => $users,
+			'page'      => $page,
+			'sort'      => $sort,
+			'direction' => $direction,
+			'pages'     => $pages
+		]);
     }
 
     /**
@@ -64,10 +59,10 @@ class UserController extends Controller
     public function create(Request $request, $errors)
 	{
 		// Create the user if there are no errors after the validation (by the Middleware attached to the router)
-		if ($request->isMethod('post') && !$errors->any()) {
+		if ('POST' === $request->getMethod() && !$errors->any()) {
 			$user = new User();
 			$user = $user->create([
-				'name' => $request->name,
+				'name'  => $request->name,
 				'email' => $request->email
 			]);
 			$user->assignRoles($request->roles);
@@ -75,14 +70,15 @@ class UserController extends Controller
 			return redirect('/users/'.$user->id.'/edit');
 		}
 
-		// Define parameters that will be displayed in the view
 		$roles = new Role();
-		$roles = $roles->all();
-		$name = $request->has('name') ? $request->name : '';
-		$email = $request->has('email') ? $request->email : '';
-		$roles_selected = $request->has('roles') ? $request->roles : [];
 
-		return view('users.create', compact(['roles', 'errors', 'name', 'email', 'roles_selected']));
+		return view('users.create', [
+			'roles'          => $roles->all(),
+			'errors'         => $errors,
+			'name'           => $request->name ?? '',
+			'email'          => $request->email ?? '',
+			'roles_selected' => $request->roles ?? []
+		]);
     }
 
     /**
@@ -96,19 +92,21 @@ class UserController extends Controller
     public function edit(Request $request, $user, $errors)
     {
 		// Update the user if there are no errors after the validation (by the Middleware attached to the router)
-		if ($request->isMethod('put') && !$errors->any()) {
+		if ('PUT' === $request->getMethod() && !$errors->any()) {
 			$user->update([
-				'name' => $request->name,
+				'name'  => $request->name,
 				'email' => $request->email
 			]);
 			$user->updateRoles($request->roles);
 		}
 
-		// Define parameters that will be displayed in the view
 		$roles = new Role();
-		$roles = $roles->all();
 
-		return view('users.edit', compact(['user', 'roles', 'errors']));
+		return view('users.edit', [
+			'user'   => $user,
+			'roles'  => $roles->all(),
+			'errors' => $errors
+		]);
     }
 
     /**
