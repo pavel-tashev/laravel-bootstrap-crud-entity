@@ -13,7 +13,7 @@
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                </div><br />
+                </div>
             @endif
 
             <form method="POST" action="/users/{{$user->id}}/edit">

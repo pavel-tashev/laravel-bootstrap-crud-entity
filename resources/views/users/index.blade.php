@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    <a href="users/create" class="btn btn-primary mb-2">Create User</a>
+    <a href="/users/create" class="btn btn-primary mb-2">Create User</a>
     <table class="table table-striped table-bordered">
         <thead>
         <tr>
