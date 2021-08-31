@@ -18,12 +18,17 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-    	// Validate
-		$request->validate([
-			'sort' => 'in:email,name',
-			'direction' => 'in:desc,asc',
-			'page' => 'integer'
-		]);
+    	// Validate the input data
+		$errors = new \Illuminate\Support\MessageBag();
+		if ($request->has('sort') && !in_array($request->sort, ['email', 'name'])) {
+			$request->request->remove('sort');
+		}
+		if ($request->has('direction') && !in_array($request->direction, ['desc', 'asc'])) {
+			$request->request->remove('direction');
+		}
+		if ($request->has('page') && !is_int(1*$request->page)) {
+			$request->request->remove('page');
+		}
 
 		// Set parameters
 		$page = isset($request->page) ? $request->page : 1;
