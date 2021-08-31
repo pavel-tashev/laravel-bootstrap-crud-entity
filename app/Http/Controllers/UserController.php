@@ -3,14 +3,24 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Container\Container;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use App\Models\User;
 use App\Models\Role;
 
 class UserController extends Controller
 {
-	private $itemsPerPage = 10;
-	private $sort_allowed = ['email', 'name'];
+	private $itemsPerPage      = 10;
+	private $sort_allowed      = ['email', 'name'];
 	private $direction_allowed = ['desc', 'asc'];
+
+	/**
+	 * Instantiate a new UserController instance.
+	 */
+	public function __construct() {
+		$this->container   = Container::getInstance();
+		$this->viewFactory = $this->container->make(ViewFactory::class);
+	}
 
     /**
      * Display a listing of the resource.
@@ -20,7 +30,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-    	// Validate and get the parameters responsible for the sorting and the pagination
+    	// Validate and get the parameters responsible for the sorting and the pagination using a custom helper
 		list($page, $sort, $direction) =
 			validateSortAndPagination($request, $this->sort_allowed, $this->direction_allowed);
 
@@ -40,7 +50,8 @@ class UserController extends Controller
 			->with(['roles'])
 			->get();
 
-		return view('users.index', [
+		// Rend the view
+		return $this->viewFactory->make('users.index', [
 			'users'     => $users,
 			'page'      => $page,
 			'sort'      => $sort,
@@ -72,7 +83,8 @@ class UserController extends Controller
 
 		$roles = new Role();
 
-		return view('users.create', [
+		// Rend the view
+		return $this->viewFactory->make('users.create', [
 			'roles'          => $roles->all(),
 			'errors'         => $errors,
 			'name'           => $request->name ?? '',
@@ -102,7 +114,8 @@ class UserController extends Controller
 
 		$roles = new Role();
 
-		return view('users.edit', [
+		// Rend the view
+		return $this->viewFactory->make('users.edit', [
 			'user'   => $user,
 			'roles'  => $roles->all(),
 			'errors' => $errors
@@ -119,6 +132,6 @@ class UserController extends Controller
     {
     	$user->delete();
 
-		return redirect("/users");
+		return $this->container->make('redirect')->to("/users", 302, [], null);
     }
 }
