@@ -29,37 +29,6 @@ class UsersTest extends TestCase
 	}
 
 	/**
-	 * Test the reading of a single user.
-	 *
-	 * @return void
-	 */
-	public function test_read_single_user()
-	{
-		// Create and store a new user in the database
-		$user = User::factory()->create();
-
-		// Get the user by id
-		$response = $this->get('/users/' . $user->id);
-
-		// Check if the response contains the created user
-		$response->assertSee($user->name);
-	}
-
-	/**
-	 * Test the reading of a single nonexistent user.
-	 *
-	 * @return void
-	 */
-	public function test_read_single_nonexistent_user()
-	{
-		// Get a user with a wrong id
-		$response = $this->get("/users/" . (string) rand(10, 20));
-
-		// Check if we are redirected back to the list of users
-		$response->assertStatus(302);
-	}
-
-	/**
 	 * Create a new user.
 	 *
 	 * @return void
@@ -74,7 +43,7 @@ class UsersTest extends TestCase
 		$user->roles[] = $role->id;
 
 		// Submit a post request to store the user in the database
-		$this->post('/users', $user->toArray());
+		$this->post('/users/create', $user->toArray());
 
 		// Check if it's stored in the database
 		$this->assertEquals(1, User::all()->count());
@@ -110,7 +79,7 @@ class UsersTest extends TestCase
 		$user->name = "New name";
 
 		// Submit a put request to update the user
-		$this->put('/users/'.$user->id, $user->toArray());
+		$this->put('/users/'.$user->id.'/edit', $user->toArray());
 
 		// Check if the user has been updated
 		$this->assertDatabaseHas('users',['id'=> $user->id , 'name' => 'New name']);
@@ -127,7 +96,7 @@ class UsersTest extends TestCase
 		$user = User::factory()->create();
 
 		// Request update of a user but with a wrong id
-		$response = $this->put("/users/" . (string) rand(10, 20), $user->toArray());
+		$response = $this->put("/users/" . (string) rand(10, 20).'/edit', $user->toArray());
 
 		// Check if we are redirected back to the list of users
 		$response->assertStatus(302);
