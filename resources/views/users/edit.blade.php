@@ -44,7 +44,7 @@
                     </select>
                 </div>
                 <button class="btn btn-success" type="Submit" >Save</button>
-                <a href="/users" class="btn btn-danger float-right">Cancel</a>
+                <a href="/users" class="btn btn-danger float-right">Close</a>
             </form>
         </div>
     </div>
