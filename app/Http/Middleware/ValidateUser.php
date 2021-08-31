@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\MessageBag;
 use App\Models\User;
 use App\Models\Role;
 
@@ -18,10 +19,10 @@ class ValidateUser
      */
     public function handle(Request $request, Closure $next)
     {
-		$errors = new \Illuminate\Support\MessageBag();
+		$errors = new MessageBag();
 
     	// Check if the request is POST or PUT
-		if ($request->isMethod('post') || $request->isMethod('put')) {
+		if (in_array($request->getMethod(), ['POST', 'PUT'])) {
 			do {
 				// Check if the passed fields are empty
 				if (!$request->filled(['name', 'email', 'roles'])) {
