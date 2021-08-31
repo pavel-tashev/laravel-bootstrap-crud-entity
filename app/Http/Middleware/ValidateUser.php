@@ -30,9 +30,10 @@ class ValidateUser
 				}
 
 				// Check if the roles exist
+				$role = new Role();
 				if (
 					!is_array($request->roles) &&
-					!(count($request->roles) == Role::whereIn('id', $request->roles)->get()->count())
+					!(count($request->roles) == $role->whereIn('id', $request->roles)->get()->count())
 				) {
 					$errors->add('invalid_role', 'One or more of the selected roles do not exist.');
 				}
@@ -44,7 +45,8 @@ class ValidateUser
 				}
 
 				// Check if the email address is occupied
-				if ($request->isMethod('post') && !is_null(User::where('email', $request->email)->first())) {
+				$user = new User();
+				if ($request->isMethod('post') && !is_null($user->where('email', $request->email)->first())) {
 					$errors->add('email_occupied', 'The email is already occupied.');
 					break;
 				}

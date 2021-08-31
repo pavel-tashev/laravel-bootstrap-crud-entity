@@ -31,7 +31,8 @@ class UserController extends Controller
 		$direction = isset($request->direction) ? $request->direction : null;
 
 		// Prepare to get users
-		$users = User::with(['roles']);
+		$users = new User();
+		$users = $users->with(['roles']);
 
 		// Sort users
 		if (!is_null($sort) && !is_null($direction)) $users = $users->orderBy($sort, $direction);
@@ -59,7 +60,8 @@ class UserController extends Controller
 	{
 		// Create the user if there are no errors after the validation (by the Middleware attached to the router)
 		if ($request->isMethod('post') && !$errors->any()) {
-			$user = User::create([
+			$user = new User();
+			$user = $user->create([
 				'name' => $request->name,
 				'email' => $request->email
 			]);
@@ -69,7 +71,8 @@ class UserController extends Controller
 		}
 
 		// Define parameters that will be displayed in the view
-		$roles = Role::all();
+		$roles = new Role();
+		$roles = $roles->all();
 		$name = $request->has('name') ? $request->name : '';
 		$email = $request->has('email') ? $request->email : '';
 		$roles_selected = $request->has('roles') ? $request->roles : [];
@@ -97,7 +100,8 @@ class UserController extends Controller
 		}
 
 		// Define parameters that will be displayed in the view
-		$roles = Role::all();
+		$roles = new Role();
+		$roles = $roles->all();
 
 		return view('users.edit', compact(['user', 'roles', 'errors']));
     }
