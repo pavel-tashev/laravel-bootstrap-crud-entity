@@ -13,6 +13,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
+	 * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -50,76 +51,55 @@ class UserController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+	 * @param Request $request
+	 * @param $errors
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $errors)
 	{
+		// Create the user if there are no errors after the validation (by the Middleware attached to the router)
+		if ($request->isMethod('post') && !$errors->any()) {
+			$user = User::create([
+				'name' => $request->name,
+				'email' => $request->email
+			]);
+			$user->assignRoles($request->roles);
+
+			return redirect('/users/'.$user->id.'/edit');
+		}
+
+		// Define parameters that will be displayed in the view
 		$roles = Role::all();
+		$name = $request->has('name') ? $request->name : '';
+		$email = $request->has('email') ? $request->email : '';
+		$roles_selected = $request->has('roles') ? $request->roles : [];
 
-		return view('users.create', compact('roles'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function store(Request $request)
-    {
-		$validatedData = $request->validate([
-			'name' => 'required',
-			'email' => 'required',
-			'roles' => 'required',
-		]);
-		$user = User::create($validatedData);
-		$user->assignRoles($request->roles);
-
-		return redirect('/users/'.$user->id)->withInput();
-    }
-
-	/**
-	 * Display the specified resource.
-	 *
-	 * @param $user
-	 * @return \Illuminate\Http\Response
-	 */
-    public function show($user)
-    {
-		return view('users.show', compact('user'));
+		return view('users.create', compact(['roles', 'errors', 'name', 'email', 'roles_selected']));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param $user
+     * @param Request $request
+	 * @param $user
+	 * @param $errors
      * @return \Illuminate\Http\Response
      */
-    public function edit($user)
+    public function edit(Request $request, $user, $errors)
     {
+		// Update the user if there are no errors after the validation (by the Middleware attached to the router)
+		if ($request->isMethod('put') && !$errors->any()) {
+			$user->update([
+				'name' => $request->name,
+				'email' => $request->email
+			]);
+			$user->updateRoles($request->roles);
+		}
+
+		// Define parameters that will be displayed in the view
 		$roles = Role::all();
 
-		return view('users.edit', compact(['user', 'roles']));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param $user
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update(Request $request, $user)
-    {
-		$validatedData = $request->validate([
-			'name' => 'required',
-			'email' => 'required',
-			'roles' => 'required',
-		]);
-		$user->update($validatedData);
-		$user->updateRoles($request->roles);
-
-		return redirect('/users/'.$user->id);
+		return view('users.edit', compact(['user', 'roles', 'errors']));
     }
 
     /**
