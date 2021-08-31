@@ -151,3 +151,8 @@ php artisan migrate:refresh --seed
 ```
 php artisan test
 ```
+
+## List all registered routes
+```
+php artisan route:list
+```
