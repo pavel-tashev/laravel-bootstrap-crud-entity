@@ -14,4 +14,11 @@ use App\Http\Controllers\UserController;
 |
 */
 Route::redirect('/', '/users');
-Route::resource('users', UserController::class)->middleware('ensure.entity.exists');
+Route::get('users', [UserController::class, 'index']);
+Route::any('users/create', [UserController::class, 'create'])
+	->middleware('validate.user');
+Route::any('users/{user}/edit', [UserController::class, 'edit'])
+	->middleware('ensure.entity.exists')
+	->middleware('validate.user');
+Route::delete('users/{user}', [UserController::class, 'destroy'])
+	->middleware('ensure.entity.exists');
