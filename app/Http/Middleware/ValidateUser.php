@@ -47,7 +47,7 @@ class ValidateUser
 
 				// Check if the email address is occupied
 				$user = new User();
-				if ($request->isMethod('post') && !is_null($user->where('email', $request->email)->first())) {
+				if ($request->getMethod() === 'POST' && !is_null($user->where('email', $request->email)->first())) {
 					$errors->add('email_occupied', 'The email is already occupied.');
 					break;
 				}
