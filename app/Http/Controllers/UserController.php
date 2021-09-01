@@ -70,7 +70,7 @@ class UserController extends Controller
     public function create(Request $request, $errors)
 	{
 		// Create the user if there are no errors after the validation (by the Middleware attached to the router)
-		if ('POST' === $request->getMethod() && !$errors->any()) {
+		if ('POST' === $request->getMethod() && $errors->count() == 0) {
 			$user = new User();
 			$user = $user->create([
 				'name'  => $request->name,
@@ -104,7 +104,7 @@ class UserController extends Controller
     public function edit(Request $request, $user, $errors)
     {
 		// Update the user if there are no errors after the validation (by the Middleware attached to the router)
-		if ('PUT' === $request->getMethod() && !$errors->any()) {
+		if ('PUT' === $request->getMethod() && $errors->count() == 0) {
 			$user->update([
 				'name'  => $request->name,
 				'email' => $request->email
