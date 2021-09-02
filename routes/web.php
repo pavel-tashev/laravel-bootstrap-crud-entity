@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +13,12 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::redirect('/', '/users');
+Route::get('users', [UserController::class, 'index']);
+Route::any('users/create', [UserController::class, 'create'])
+	->middleware('validate.user');
+Route::any('users/{user}/edit', [UserController::class, 'edit'])
+	->middleware('ensure.entity.exists')
+	->middleware('validate.user');
+Route::delete('users/{user}', [UserController::class, 'destroy'])
+	->middleware('ensure.entity.exists');
